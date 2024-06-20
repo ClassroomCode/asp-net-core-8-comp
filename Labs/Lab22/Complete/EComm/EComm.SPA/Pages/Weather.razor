@@ -1,0 +1,52 @@
+﻿@page "/weather"
+@inject HttpClient Http
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Package</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products) {
+                <tr>
+                    <td>@product.ProductName</td>
+                    <td>@product.FormattedPrice</td>
+                    <td>@product.Package</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Product[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await Http.GetFromJsonAsync<Product[]>("product");
+    }
+
+    public class Product
+    {
+        public string ProductName { get; set; } = String.Empty;
+        public decimal? UnitPrice { get; set; }
+        public string Package { get; set; } = String.Empty;
+
+        public string FormattedPrice => $"{UnitPrice:C}";
+    }
+}
